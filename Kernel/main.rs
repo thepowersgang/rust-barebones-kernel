@@ -10,6 +10,7 @@
  */
 #![no_std]	//< Kernels can't use std
 #![feature(lang_items)]	//< unwind needs to define lang items
+#![feature(asm)]	//< As a kernel, we need inline assembly
 
 use prelude::*;
 
@@ -29,9 +30,14 @@ mod prelude;
 mod unwind;
 
 // Kernel entrypoint
+#[lang="start"]
 #[no_mangle]
 fn kmain()
 {
+	unsafe {
+		// The arch::debug functions are unsafe, as they do no synchronisation
+		::arch::debug::puts("Hello World!\n")
+	}
 	loop {}
 }
 

@@ -6,7 +6,7 @@ ARCH ?= amd64
 RUSTC ?= rustc
 ifeq ($(ARCH),amd64)
     LD := x86_64-elf-ld
-    LD := x86_64-elf-ld
+    AS := x86_64-elf-as
     OBJDUMP := x86_64-elf-objdump
 else ifeq ($(ARCH),x86)
     LD := i586-elf-ld
@@ -22,31 +22,45 @@ OBJDIR := .obj/$(ARCH)/
 # Compiler Options
 LINKFLAGS := -T arch/$(ARCH)/link.ld
 LINKFLAGS += -Map $(OBJDIR)map.txt
+LINKFLAGS += -z max-page-size=0x1000
 RUSTFLAGS := -O --cfg arch__$(ARCH) --target=arch/$(ARCH)/target.json
 
 # Objects
 LIBCORE := $(OBJDIR)libcore.rlib
 OBJS := start.o kernel.o libcore.rlib
-
 OBJS := $(OBJS:%=$(OBJDIR)%)
+BIN := ../kernel.$(ARCH).bin
+
+.PHONY: all clean
 
 all: ../kernel.$(ARCH).bin
 
 clean:
-	$(RM) -rf ../kernel.$(ARCH).bin $(OBJDIR)
+	$(RM) -rf $(BIN) $(BIN).dsm $(OBJDIR)
 
-../kernel.$(ARCH).bin: $(OBJS) arch/$(ARCH)/link.ld
+# Final link command
+$(BIN): $(OBJS) arch/$(ARCH)/link.ld
 	$(LD) -o $@ $(LINKFLAGS) $(OBJS)
 	$(OBJDUMP) -S $@ > $@.dsm
+ifeq ($(ARCH),amd64)
+	@mv $@ $@.elf64
+	@x86_64-elf-objcopy $@.elf64 -F elf32-i386 $@
+endif
 
-$(OBJDIR)libcore.rlib: ../libcore/lib.rs
+# Compile libcore from ../libcore/
+$(OBJDIR)libcore.rlib: ../libcore/lib.rs Makefile
 	@mkdir -p $(dir $@)
-	$(RUSTC) $(RUSTFLAGS) -o $@ --crate-type=lib $<
+	$(RUSTC) $(RUSTFLAGS) -o $@ --crate-type=lib --emit=link,dep-info $<
 
-$(OBJDIR)kernel.o: main.rs $(LIBCORE)
+# Compile rust kernel object
+$(OBJDIR)kernel.o: main.rs $(LIBCORE) Makefile
 	@mkdir -p $(dir $@)
-	$(RUSTC) $(RUSTFLAGS) -o $@ --emit=obj $< --extern core=$(LIBCORE)
+	$(RUSTC) $(RUSTFLAGS) -o $@ --emit=obj,dep-info $< --extern core=$(LIBCORE)
 
-$(OBJDIR)start.o: arch/$(ARCH)/start.S
+# Compile architecture's assembly stub
+$(OBJDIR)start.o: arch/$(ARCH)/start.S Makefile
 	@mkdir -p $(dir $@)
 	$(AS) $(ASFLAGS) -o $@ $<
+
+# Include dependency files
+-include $(OBJ:%=%.d)
