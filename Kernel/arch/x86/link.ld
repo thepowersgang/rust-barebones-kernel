@@ -1,9 +1,12 @@
-ENTRY(start)
+ENTRY(start_low)
 OUTPUT_FORMAT(elf32-i386)
 
 KERNEL_BASE = 0xC0000000;
 
 SECTIONS {
+	. = 0x100000;
+	. += SIZEOF_HEADERS;
+	
 	.multiboot : AT(ADDR(.multiboot)) {
 		*(.multiboot)
 	}
@@ -13,6 +16,8 @@ SECTIONS {
 	.text : AT(ADDR(.text) - KERNEL_BASE) {
 		*(.text .text.*)
 	}
+	
+	start_low = start - KERNEL_BASE;
 	
 	/* read-only data, page aligned to allow use of the no-execute feature */
 	. = ALIGN(0x1000);

@@ -21,7 +21,7 @@ extern crate core;
 #[cfg(arch__amd64)] #[path="arch/amd64/mod.rs"]
 mod arch;
 #[cfg(arch__x86)] #[path="arch/x86/mod.rs"]
-mod arch;
+pub mod arch;
 
 // Prelude
 mod prelude;

@@ -179,6 +179,8 @@ init_stack:
 
 /* === General Data === */
 .section .data
+.globl mboot_sig
+.globl mboot_ptr
 mboot_sig:	.long 0
 mboot_ptr:	.long 0
 
