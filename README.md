@@ -15,11 +15,7 @@ Features
 ---
 * x86 and x86\_64 (amd64) "ports"
 * Initial paging for both (with higher-half)
-* Serial output using the classic PC serial port
+* Serial output using the classic PC serial port, formatted using `::core::fmt`
 * Links with libcore
 
-
-Todo List
----
-* Send serial output via `::core::fmt`
 
