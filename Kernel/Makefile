@@ -22,6 +22,7 @@ OBJDIR := .obj/$(ARCH)/
 # Compiler Options
 LINKFLAGS := -T arch/$(ARCH)/link.ld
 LINKFLAGS += -Map $(OBJDIR)map.txt
+LINKFLAGS += --gc-sections
 LINKFLAGS += -z max-page-size=0x1000
 RUSTFLAGS := -O --cfg arch__$(ARCH) --target=arch/$(ARCH)/target.json
 
@@ -63,4 +64,4 @@ $(OBJDIR)start.o: arch/$(ARCH)/start.S Makefile
 	$(AS) $(ASFLAGS) -o $@ $<
 
 # Include dependency files
--include $(OBJ:%=%.d)
+-include $(OBJDIR)libcore.d $(OBJDIR)kernel.d $(OBJDIR)start.d

@@ -8,7 +8,7 @@ SECTIONS {
 	. += SIZEOF_HEADERS;
 	
 	.multiboot : AT(ADDR(.multiboot)) {
-		*(.multiboot)
+		KEEP( *(.multiboot) )
 	}
 	
 	. += KERNEL_BASE;

@@ -15,11 +15,23 @@
 use prelude::*;
 
 // Load libcore (it's nice and freestanding)
+// - We want the macros from libcore
+#[macro_use]
 extern crate core;
+
+/// A dummy 'std' module to work around a set of issues in rustc
+mod std {
+	// #18491 - write!() expands to std::fmt::Arguments::new
+	pub use core::fmt;
+}
+
+/// Macros, need to be loaded before everything else due to how rust parses
+#[macro_use]
+mod macros;
 
 // Achitecture-specific modules
 #[cfg(arch__amd64)] #[path="arch/amd64/mod.rs"]
-mod arch;
+pub mod arch;
 #[cfg(arch__x86)] #[path="arch/x86/mod.rs"]
 pub mod arch;
 
@@ -27,17 +39,17 @@ pub mod arch;
 mod prelude;
 
 /// Exception handling (panic)
-mod unwind;
+pub mod unwind;
+
+/// Logging code
+mod logging;
 
 // Kernel entrypoint
 #[lang="start"]
 #[no_mangle]
 fn kmain()
 {
-	unsafe {
-		// The arch::debug functions are unsafe, as they do no synchronisation
-		::arch::debug::puts("Hello World!\n")
-	}
+	log!("Hello world!");
 	loop {}
 }
 

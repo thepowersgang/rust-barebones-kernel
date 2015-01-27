@@ -15,6 +15,8 @@ use prelude::*;
 #[no_mangle]
 fn rust_begin_unwind(args: ::core::fmt::Arguments, file: &str, line: usize) -> !
 {
+	// 'args' will print to the formatted string passed to panic!
+	log!("file='{}', line={} :: {}", file, line, args);
 	loop {}
 }
 
@@ -60,11 +62,17 @@ struct _Unwind_Exception
 #[lang="eh_personality"]
 #[no_mangle]
 fn rust_eh_personality(
-	version: isize, _actions: _Unwind_Action, _exception_class: u64,
+	_version: isize, _actions: _Unwind_Action, _exception_class: u64,
 	_exception_object: &_Unwind_Exception, _context: &_Unwind_Context
 	) -> _Unwind_Reason_Code
 {
 	loop{}
 }
 
+#[no_mangle]
+#[allow(non_snake_case)]
+pub fn _Unwind_Resume()
+{
+	loop{}
+}
 

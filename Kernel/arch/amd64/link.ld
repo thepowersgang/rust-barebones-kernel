@@ -4,12 +4,13 @@ OUTPUT_FORMAT(elf64-x86-64)
 KERNEL_BASE = 0xFFFFFFFF80000000;
 
 SECTIONS {
+	
 	. = 0x100000;
 	
 	. += SIZEOF_HEADERS;
 	
 	.init : AT(ADDR(.init)) {
-		*(.multiboot)
+		KEEP( *(.multiboot) )
 		*(.inittext)
 	}
 
