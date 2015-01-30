@@ -8,6 +8,7 @@ ifeq ($(ARCH),amd64)
     LD := x86_64-elf-ld
     AS := x86_64-elf-as
     OBJDUMP := x86_64-elf-objdump
+    OBJCOPY := x86_64-elf-objcopy
 else ifeq ($(ARCH),x86)
     LD := i586-elf-ld
     AS := i586-elf-as
@@ -45,7 +46,7 @@ $(BIN): $(OBJS) arch/$(ARCH)/link.ld
 	$(OBJDUMP) -S $@ > $@.dsm
 ifeq ($(ARCH),amd64)
 	@mv $@ $@.elf64
-	@x86_64-elf-objcopy $@.elf64 -F elf32-i386 $@
+	@$(OBJCOPY) $@.elf64 -F elf32-i386 $@
 endif
 
 # Compile libcore from ../libcore/
