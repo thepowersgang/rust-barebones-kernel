@@ -23,6 +23,8 @@ extern crate core;
 mod std {
 	// #18491 - write!() expands to std::fmt::Arguments::new
 	pub use core::fmt;
+	// #16803 - #[derive] references std::cmp
+	pub use core::cmp;
 }
 
 /// Macros, need to be loaded before everything else due to how rust parses
@@ -30,9 +32,9 @@ mod std {
 mod macros;
 
 // Achitecture-specific modules
-#[cfg(arch__amd64)] #[path="arch/amd64/mod.rs"]
+#[cfg(target_arch="x86_64")] #[path="arch/amd64/mod.rs"]
 pub mod arch;
-#[cfg(arch__x86)] #[path="arch/x86/mod.rs"]
+#[cfg(target_arch="x86")] #[path="arch/x86/mod.rs"]
 pub mod arch;
 
 // Prelude
