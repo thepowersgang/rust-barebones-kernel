@@ -13,7 +13,7 @@ use prelude::*;
 
 #[lang="panic_fmt"]
 #[no_mangle]
-fn rust_begin_unwind(args: ::core::fmt::Arguments, file: &str, line: usize) -> !
+pub fn rust_begin_unwind(args: ::core::fmt::Arguments, file: &str, line: usize) -> !
 {
 	// 'args' will print to the formatted string passed to panic!
 	log!("file='{}', line={} :: {}", file, line, args);
@@ -22,7 +22,7 @@ fn rust_begin_unwind(args: ::core::fmt::Arguments, file: &str, line: usize) -> !
 
 #[lang="stack_exhausted"]
 #[no_mangle]
-fn __morestack() -> !
+pub fn __morestack() -> !
 {
 	loop {}
 }
@@ -30,7 +30,8 @@ fn __morestack() -> !
 
 #[allow(non_camel_case_types)]
 #[repr(C)]
-enum _Unwind_Reason_Code
+#[derive(Copy)]
+pub enum _Unwind_Reason_Code
 {
 	_URC_NO_REASON = 0,
 	_URC_FOREIGN_EXCEPTION_CAUGHT = 1,
@@ -44,15 +45,18 @@ enum _Unwind_Reason_Code
 }
 
 #[allow(non_camel_case_types)]
-struct _Unwind_Context;
+#[derive(Copy)]
+pub struct _Unwind_Context;
 
 #[allow(non_camel_case_types)]
-type _Unwind_Action = u32;
+pub type _Unwind_Action = u32;
 static _UA_SEARCH_PHASE: _Unwind_Action = 1;
 
 #[allow(non_camel_case_types)]
 #[repr(C)]
-struct _Unwind_Exception
+#[derive(Copy)]
+#[allow(raw_pointer_derive)]
+pub struct _Unwind_Exception
 {
 	exception_class: u64,
 	exception_cleanup: fn(_Unwind_Reason_Code,*const _Unwind_Exception),
@@ -61,7 +65,7 @@ struct _Unwind_Exception
 
 #[lang="eh_personality"]
 #[no_mangle]
-fn rust_eh_personality(
+pub fn rust_eh_personality(
 	_version: isize, _actions: _Unwind_Action, _exception_class: u64,
 	_exception_object: &_Unwind_Exception, _context: &_Unwind_Context
 	) -> _Unwind_Reason_Code

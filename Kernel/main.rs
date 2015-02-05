@@ -26,6 +26,11 @@ mod std {
 	pub use core::fmt;
 	// #16803 - #[derive] references std::cmp
 	pub use core::cmp;
+	// ??? - For loops reference std
+	pub use core::iter;
+	pub use core::option;
+	// ??? - Derive references marker/ops
+	pub use core::marker;
 }
 
 /// Macros, need to be loaded before everything else due to how rust parses
@@ -50,7 +55,7 @@ mod logging;
 // Kernel entrypoint
 #[lang="start"]
 #[no_mangle]
-fn kmain()
+pub fn kmain()
 {
 	log!("Hello world!");
 	loop {}
