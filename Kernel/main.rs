@@ -8,10 +8,11 @@
  * This code has been put into the public domain, there are no restrictions on
  * its use, and the author takes no liability.
  */
-#![no_std]	//< Kernels can't use std
+#![feature(no_std)]	//< unwind needs to define lang items
 #![feature(lang_items)]	//< unwind needs to define lang items
 #![feature(asm)]	//< As a kernel, we need inline assembly
 #![feature(core)]	//< libcore (see below) is not yet stablized
+#![no_std]	//< Kernels can't use std
 
 use prelude::*;
 
@@ -26,10 +27,12 @@ mod std {
 	pub use core::fmt;
 	// #16803 - #[derive] references std::cmp
 	pub use core::cmp;
-	// ??? - For loops reference std
+	// #21827 - Slicing syntax references std::ops
+	pub use core::ops;
+	// #21827 - Loops reference std
 	pub use core::iter;
 	pub use core::option;
-	// ??? - Derive references marker/ops
+	// #16803 - Derive references marker/ops
 	pub use core::marker;
 }
 
