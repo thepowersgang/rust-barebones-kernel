@@ -27,7 +27,7 @@ impl Writer
 		
 		// Print the module name before returning (prefixes all messages)
 		{
-			use core::fmt::Writer;
+			use core::fmt::Write;
 			let _ = write!(&mut ret, "[{}] ", module);
 		}
 		
@@ -41,7 +41,7 @@ impl ::core::ops::Drop for Writer
 	{
 		// Write a terminating newline before releasing the lock
 		{
-			use core::fmt::Writer;
+			use core::fmt::Write;
 			let _ = write!(self, "\n");
 		}
 		// On drop, "release" the lock
@@ -51,7 +51,7 @@ impl ::core::ops::Drop for Writer
 	}
 }
 
-impl fmt::Writer for Writer
+impl fmt::Write for Writer
 {
 	fn write_str(&mut self, s: &str) -> fmt::Result
 	{
