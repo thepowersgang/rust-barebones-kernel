@@ -18,4 +18,26 @@ Features
 * Serial output using the classic PC serial port, formatted using `::core::fmt`
 * Links with libcore
 
+Building
+---
+
+Roughly, this:
+
+```bash
+$ git clone https://github.com/thepowersgang/rust-barebones-kernel
+$ cd rust-barebones-kernel
+$ cp -r /some/installation/of/rust/src/libcore .
+$ cd Kernel
+$ make
+$ cd ..
+$ qemu-system-x86_64 -kernel kernel.amd64.bin -serial stdio
+```
+
+You should see a 
+
+```text
+[main] Hello world!
+```
+
+print to the console.
 
