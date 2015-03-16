@@ -60,7 +60,7 @@ mod logging;
 #[no_mangle]
 pub fn kmain()
 {
-	log!("Hello world!");
+	log!("Hello world! 1={}", 1);
 	loop {}
 }
 

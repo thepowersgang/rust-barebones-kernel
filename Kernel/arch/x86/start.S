@@ -35,9 +35,9 @@ mboot:
 	.long 0 	/* Height (no preference) */
 	.long 32	/* Depth (32-bit preferred) */
 
-/* === Code === */
-.section .text, "ax"
 .extern x86_prep_page_table
+/* === Code === */
+.section .inittext, "ax"
 .globl start
 start:
 	/* Save multiboot state */
@@ -47,7 +47,7 @@ start:
 	/* XXX: Get rust code to prepare the page table */
 	mov $init_stack - LINKED_BASE, %esp
 	push $init_pt - LINKED_BASE
-	call x86_prep_page_table	/* no need to subtract LINKED_BASE, relative call */
+	call x86_prep_page_table - LINKED_BASE
 	add 4, %esp
 	
 	/* Enable paging */
@@ -61,6 +61,7 @@ start:
 	
 	/* Jump High and set CS */
 	ljmp $0x08,$start_high
+.section .text
 .globl start_high
 .extern kmain
 start_high:

@@ -20,12 +20,19 @@ endif
 # Object directory
 OBJDIR := .obj/$(ARCH)/
 
+LINKSCRIPT := arch/$(ARCH)/link.ld
+TARGETSPEC := arch/$(ARCH)/target.json
 # Compiler Options
-LINKFLAGS := -T arch/$(ARCH)/link.ld
+LINKFLAGS := -T $(LINKSCRIPT)
 LINKFLAGS += -Map $(OBJDIR)map.txt
 LINKFLAGS += --gc-sections
 LINKFLAGS += -z max-page-size=0x1000
-RUSTFLAGS := -O --cfg arch__$(ARCH) --target=arch/$(ARCH)/target.json
+
+RUSTFLAGS := -O --cfg arch__$(ARCH) --target=$(TARGETSPEC)
+# - amd64 needs to be set to use soft floating point
+ifeq ($(ARCH),amd64)
+RUSTFLAGS += -C soft-float
+endif
 
 # Objects
 LIBCORE := $(OBJDIR)libcore.rlib
@@ -50,12 +57,12 @@ ifeq ($(ARCH),amd64)
 endif
 
 # Compile libcore from ../libcore/
-$(OBJDIR)libcore.rlib: ../libcore/lib.rs Makefile
+$(OBJDIR)libcore.rlib: ../libcore/lib.rs Makefile $(TARGETSPEC)
 	@mkdir -p $(dir $@)
 	$(RUSTC) $(RUSTFLAGS) -o $@ --crate-type=lib --emit=link,dep-info $<
 
 # Compile rust kernel object
-$(OBJDIR)kernel.o: main.rs $(LIBCORE) Makefile
+$(OBJDIR)kernel.o: main.rs $(LIBCORE) Makefile $(TARGETSPEC)
 	@mkdir -p $(dir $@)
 	$(RUSTC) $(RUSTFLAGS) -o $@ --emit=obj,dep-info $< --extern core=$(LIBCORE)
 
