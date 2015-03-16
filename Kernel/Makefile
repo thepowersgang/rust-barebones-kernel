@@ -26,6 +26,9 @@ LINKFLAGS += -Map $(OBJDIR)map.txt
 LINKFLAGS += --gc-sections
 LINKFLAGS += -z max-page-size=0x1000
 RUSTFLAGS := -O --cfg arch__$(ARCH) --target=arch/$(ARCH)/target.json
+RUSTFLAGS += -C soft-float
+# see https://github.com/llvm-mirror/llvm/blob/master/lib/Target/X86/X86.td
+RUSTFLAGS += -C target-feature=-3dnow,-avx,-avx2,-sse,-sse2,-sse3,-sse4.1,-sse4.2,-mmx
 
 # Objects
 LIBCORE := $(OBJDIR)libcore.rlib
