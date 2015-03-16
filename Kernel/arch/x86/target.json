@@ -3,7 +3,7 @@
 	"llvm-target": "i686-unknown-linux-gnu",
 	"target-endian": "little",
 	"target-pointer-width": "32",
-	"features": "",
+	"features": "-mmx,-sse,-sse2,-sse3,-ssse3",
 	"os": "none",
 	"arch": "x86",
 		"pre-link-args": ["-m32"],
