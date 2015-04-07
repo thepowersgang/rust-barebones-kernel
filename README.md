@@ -26,6 +26,8 @@ Roughly, this:
 ```bash
 $ git clone https://github.com/thepowersgang/rust-barebones-kernel
 $ cd rust-barebones-kernel
+$ # Make sure that you copy the libcore from the same commit as the build of rustc you're using
+$ # If you're using a nightly or prepared build, you can use `rustc -v --version` to get a commit hash.
 $ cp -r /some/installation/of/rust/src/libcore .
 $ cd Kernel
 $ make
