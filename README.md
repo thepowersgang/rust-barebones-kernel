@@ -6,7 +6,7 @@ This is designed to be a rust equivalent of the OSDev.org Bare\_Bones article, p
 
 Requirements
 ---
-* A recent (1.0alpha) build of rustc
+* A recent (1.0 nightly) build of rustc
 * A suitable cross-compiling copy of binutils (i586-elf or x86\_64-elf)
 * A copy of the libcore source in .../libcore (synlink will do)
 
