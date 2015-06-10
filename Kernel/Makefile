@@ -10,9 +10,9 @@ ifeq ($(ARCH),amd64)
     OBJDUMP := x86_64-elf-objdump
     OBJCOPY := x86_64-elf-objcopy
 else ifeq ($(ARCH),x86)
-    LD := i586-elf-ld
-    AS := i586-elf-as
-    OBJDUMP := i586-elf-objdump
+    LD := i686-elf-ld
+    AS := i686-elf-as
+    OBJDUMP := i686-elf-objdump
 else
     $(error Unknown architecture $(ARCH))
 endif
