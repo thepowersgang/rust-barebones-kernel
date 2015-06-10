@@ -110,7 +110,7 @@ mboot_sig:
 mboot_ptr:
 	.long 0
 GDTPtr:
-	.word GDT - GDTEnd
+	.word GDT - GDTEnd - 1
 	.long GDT
 GDT:
 	.long 0x00000000, 0x00000000	/* 00 NULL Entry */
