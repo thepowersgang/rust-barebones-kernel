@@ -186,10 +186,10 @@ mboot_ptr:	.long 0
 
 /* Global Descriptor Table */
 GDTPtr_low:
-	.word GDT - GDTEnd - 1
+	.word GDTEnd - GDT - 1
 	.long GDT - KERNEL_BASE
 GDTPtr:
-	.word GDT - GDTEnd - 1
+	.word GDTEnd - GDT - 1
 	.quad GDT
 .globl GDT
 GDT:
