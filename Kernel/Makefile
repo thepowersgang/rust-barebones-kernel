@@ -5,10 +5,10 @@ ARCH ?= amd64
 # Toolchain commands (can be overridden)
 RUSTC ?= rustc
 ifeq ($(ARCH),amd64)
-    LD := x86_64-elf-ld
-    AS := x86_64-elf-as
-    OBJDUMP := x86_64-elf-objdump
-    OBJCOPY := x86_64-elf-objcopy
+    LD := x86_64-none-elf-ld
+    AS := x86_64-none-elf-as
+    OBJDUMP := x86_64-none-elf-objdump
+    OBJCOPY := x86_64-none-elf-objcopy
 else ifeq ($(ARCH),x86)
     LD := i686-elf-ld
     AS := i686-elf-as
@@ -28,7 +28,7 @@ LINKFLAGS += -Map $(OBJDIR)map.txt
 LINKFLAGS += --gc-sections
 LINKFLAGS += -z max-page-size=0x1000
 
-RUSTFLAGS := -O --cfg arch__$(ARCH) --target=$(TARGETSPEC)
+RUSTFLAGS := -O --cfg arch__$(ARCH) --target=$(TARGETSPEC) --cfg disable_float
 # - amd64 needs to be set to use soft floating point
 ifeq ($(ARCH),amd64)
 RUSTFLAGS += -C soft-float

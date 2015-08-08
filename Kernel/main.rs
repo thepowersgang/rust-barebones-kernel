@@ -12,14 +12,8 @@
 #![feature(lang_items)]	//< unwind needs to define lang items
 #![feature(asm)]	//< As a kernel, we need inline assembly
 #![feature(core)]	//< libcore (see below) is not yet stablized
+#![feature(core_prelude,core_str_ext)]   
 #![no_std]	//< Kernels can't use std
-
-use prelude::*;
-
-// Load libcore (it's nice and freestanding)
-// - We want the macros from libcore
-#[macro_use]
-extern crate core;
 
 /// A dummy 'std' module to work around a set of issues in rustc
 mod std {
@@ -45,9 +39,6 @@ mod macros;
 pub mod arch;
 #[cfg(target_arch="x86")] #[path="arch/x86/mod.rs"]
 pub mod arch;
-
-// Prelude
-mod prelude;
 
 /// Exception handling (panic)
 pub mod unwind;
