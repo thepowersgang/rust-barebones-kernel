@@ -1,4 +1,4 @@
 language: rust
 rust:
   - nightly
-script: make UPDATE all
+script: make -C Kernel/ UPDATE all PREFIX=
