@@ -49,7 +49,7 @@ clean:
 	$(RM) -rf $(BIN) $(BIN).dsm $(OBJDIR)
 
 UPDATE:
-	cd ../ && curl https://static.rust-lang.org/dist/rustc-nightly-src.tar.gz
+	curl https://static.rust-lang.org/dist/rustc-nightly-src.tar.gz -o ../rustc-nightly-src.tar.gz
 
 # Final link command
 $(BIN): $(OBJS) arch/$(ARCH)/link.ld
