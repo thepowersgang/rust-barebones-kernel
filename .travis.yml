@@ -1,4 +1,9 @@
 language: rust
 rust:
   - nightly
-script: make -C Kernel/ UPDATE all TRIPLE=
+env:
+  - TRIPLE=
+script:
+  - make -C Kernel/ UPDATE
+  - make -C Kernel/ ../libcore/lib.rs
+  - make -C Kernel/ all
