@@ -1,8 +1,12 @@
 language: rust
-rust:
-  - nightly
+sudo: false
+rust: nightly
 env:
-  - TRIPLE=
+  global:
+    - TRIPLE=
+  matrix:
+    - ARCH=amd64
+    - ARCH=x86
 script:
   - make -C Kernel/ UPDATE
   - make -C Kernel/ ../libcore/lib.rs
