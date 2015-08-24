@@ -2,20 +2,21 @@
 # CONFIG: Architecture to build for
 ARCH ?= amd64
 
-# Toolchain commands (can be overridden)
-RUSTC ?= rustc
 ifeq ($(ARCH),amd64)
-    LD := x86_64-none-elf-ld
-    AS := x86_64-none-elf-as
-    OBJDUMP := x86_64-none-elf-objdump
-    OBJCOPY := x86_64-none-elf-objcopy
+    TRIPLE ?= x86_64-none-elf-
 else ifeq ($(ARCH),x86)
-    LD := i686-elf-ld
-    AS := i686-elf-as
-    OBJDUMP := i686-elf-objdump
+    TRIPLE ?= i686-elf-
 else
     $(error Unknown architecture $(ARCH))
 endif
+
+
+# Toolchain commands (can be overridden)
+RUSTC ?= rustc
+LD := $(TRIPLE)ld
+AS := $(TRIPLE)as
+OBJDUMP := $(TRIPLE)objdump
+OBJCOPY := $(TRIPLE)objcopy
 
 # Object directory
 OBJDIR := .obj/$(ARCH)/
@@ -40,12 +41,15 @@ OBJS := start.o kernel.o libcore.rlib
 OBJS := $(OBJS:%=$(OBJDIR)%)
 BIN := ../kernel.$(ARCH).bin
 
-.PHONY: all clean
+.PHONY: all clean UPDATE
 
 all: ../kernel.$(ARCH).bin
 
 clean:
 	$(RM) -rf $(BIN) $(BIN).dsm $(OBJDIR)
+
+UPDATE:
+	cd ../ && curl https://static.rust-lang.org/dist/rustc-nightly-src.tar.gz
 
 # Final link command
 $(BIN): $(OBJS) arch/$(ARCH)/link.ld
@@ -55,6 +59,10 @@ ifeq ($(ARCH),amd64)
 	@mv $@ $@.elf64
 	@$(OBJCOPY) $@.elf64 -F elf32-i386 $@
 endif
+
+../libcore/lib.rs: ../rustc-nightly-src.tar.gz ../libcore_nofp.patch
+	tar -xmf ../rustc-nightly-src.tar.gz -C ../ rustc-nightly/src/libcore --transform 's~^rustc-nightly/src/~~'
+	cd .. && patch -p0 < libcore_nofp.patch
 
 # Compile libcore from ../libcore/
 $(OBJDIR)libcore.rlib: ../libcore/lib.rs Makefile $(TARGETSPEC)
