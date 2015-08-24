@@ -3,9 +3,9 @@ sudo: false
 rust: nightly
 env:
   matrix:
-    - TRIPLE= ARCH=amd64
-    - TRIPLE= ARCH=x86
+    - ARCH=amd64
+    - ARCH=x86
 script:
-  - make -C Kernel/ UPDATE
-  - make -C Kernel/ ../libcore/lib.rs
-  - make -C Kernel/ all
+  - make -C Kernel/ UPDATE TRIPLE=
+  - make -C Kernel/ ../libcore/lib.rs TRIPLE=
+  - make -C Kernel/ all TRIPLE=
