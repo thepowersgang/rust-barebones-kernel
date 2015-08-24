@@ -4,4 +4,6 @@
 
 /*.dsm
 /*.bin
+/*.bin.elf64
+/*.tar.gz
 
