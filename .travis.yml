@@ -4,7 +4,7 @@ rust: nightly
 env:
   matrix:
     - ARCH=amd64
-    - ARCH=x86
+#    - ARCH=x86
 script:
   - make -C Kernel/ UPDATE TRIPLE=
   - make -C Kernel/ ../libcore/lib.rs TRIPLE=
