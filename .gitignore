@@ -1,6 +1,7 @@
 .*
 
 /libcore
+/libcore_orig
 
 /*.dsm
 /*.bin

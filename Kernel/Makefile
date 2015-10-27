@@ -50,6 +50,9 @@ clean:
 
 UPDATE:
 	curl https://static.rust-lang.org/dist/rustc-nightly-src.tar.gz -o ../rustc-nightly-src.tar.gz
+NEWPATCH:
+	tar -xmf ../rustc-nightly-src.tar.gz -C ../ rustc-nightly/src/libcore --transform 's~^rustc-nightly/src/libcore~libcore_orig~'
+	cd .. && diff -rub libcore_orig/ libcore/ > libcore_nofp.patch
 
 # Final link command
 $(BIN): $(OBJS) arch/$(ARCH)/link.ld
