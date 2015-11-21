@@ -54,7 +54,6 @@ static _UA_SEARCH_PHASE: _Unwind_Action = 1;
 #[allow(non_camel_case_types)]
 #[repr(C)]
 #[derive(Clone,Copy)]
-#[allow(raw_pointer_derive)]
 pub struct _Unwind_Exception
 {
 	exception_class: u64,
