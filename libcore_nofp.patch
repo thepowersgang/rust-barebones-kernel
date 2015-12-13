@@ -175,16 +175,17 @@ diff -rub libcore_orig/num/mod.rs libcore/num/mod.rs
  pub use num::dec2flt::ParseFloatError;
  
  // Conversion traits for primitive integer and float types
-@@ -2026,6 +2031,8 @@
+@@ -2026,6 +2031,9 @@
  // they fit in the significand, which is 24 bits in f32 and 53 bits in f64.
  // Lossy float conversions are not implemented at this time.
  
 +#[cfg(not(disable_float))]
 +mod _int_flot_conv {
++use convert::From;
  // Signed -> Float
  impl_from! { i8, f32 }
  impl_from! { i8, f64 }
-@@ -2042,3 +2049,4 @@
+@@ -2042,3 +2050,4 @@
  
  // Float -> Float
  impl_from! { f32, f64 }
