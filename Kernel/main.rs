@@ -8,10 +8,8 @@
  * This code has been put into the public domain, there are no restrictions on
  * its use, and the author takes no liability.
  */
-#![feature(no_std)]	//< unwind needs to define lang items
 #![feature(lang_items)]	//< unwind needs to define lang items
 #![feature(asm)]	//< As a kernel, we need inline assembly
-#![feature(core_str_ext)]   
 #![no_std]	//< Kernels can't use std
 
 /// A dummy 'std' module to work around a set of issues in rustc
