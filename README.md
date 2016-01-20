@@ -6,9 +6,9 @@ This is designed to be a rust equivalent of the OSDev.org Bare\_Bones article, p
 
 Requirements
 ---
-* A recent (1.0 nightly) build of rustc
+* A recent (nightly) build of rustc (at least the date of the most recent commit to this repo)
 * A suitable cross-compiling copy of binutils (i586-elf or x86\_64-elf)
-* A copy of the libcore source in .../libcore (synlink will do)
+ * by running `TRIPLE= make` instead of `make`, you can use the system linker, but it may not work.
 
 
 Features
@@ -26,10 +26,8 @@ Roughly, this:
 ```bash
 $ git clone https://github.com/thepowersgang/rust-barebones-kernel
 $ cd rust-barebones-kernel
-$ # Make sure that you copy the libcore from the same commit as the build of rustc you're using
-$ # If you're using a nightly or prepared build, you can use `rustc -v --version` to get a commit hash.
-$ cp -r /some/installation/of/rust/src/libcore .
 $ cd Kernel
+$ make UPDATE
 $ make
 $ cd ..
 $ qemu-system-x86_64 -kernel kernel.amd64.bin -serial stdio
