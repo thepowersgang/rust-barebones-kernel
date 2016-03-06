@@ -11,6 +11,7 @@
 #![feature(lang_items)]	//< unwind needs to define lang items
 #![feature(asm)]	//< As a kernel, we need inline assembly
 #![no_std]	//< Kernels can't use std
+#![crate_name="kernel"]
 
 /// A dummy 'std' module to work around a set of issues in rustc
 mod std {

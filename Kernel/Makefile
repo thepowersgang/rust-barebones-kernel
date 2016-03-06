@@ -70,12 +70,12 @@ endif
 # Compile libcore from ../libcore/
 $(OBJDIR)libcore.rlib: ../libcore/lib.rs Makefile $(TARGETSPEC)
 	@mkdir -p $(dir $@)
-	$(RUSTC) $(RUSTFLAGS) -o $@ --crate-type=lib --emit=link,dep-info $<
+	$(RUSTC) $(RUSTFLAGS) --out-dir=$(OBJDIR) --crate-type=lib --emit=link,dep-info $<
 
 # Compile rust kernel object
 $(OBJDIR)kernel.o: main.rs $(LIBCORE) Makefile $(TARGETSPEC)
 	@mkdir -p $(dir $@)
-	$(RUSTC) $(RUSTFLAGS) -o $@ --emit=obj,dep-info $< --extern core=$(LIBCORE)
+	$(RUSTC) $(RUSTFLAGS) --out-dir=$(OBJDIR) --emit=obj,dep-info $< --extern core=$(LIBCORE)
 
 # Compile architecture's assembly stub
 $(OBJDIR)start.o: arch/$(ARCH)/start.S Makefile
