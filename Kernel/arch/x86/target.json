@@ -1,5 +1,5 @@
 {
-	"cpu": "i686",
+	"cpu": "pentium4",
 	"llvm-target": "i686-unknown-none",
 	"target-endian": "little",
 	"target-pointer-width": "32",
