@@ -1,6 +1,6 @@
 diff -rub libcore_orig/clone.rs libcore/clone.rs
---- libcore_orig/clone.rs	2016-03-06 11:46:43.512855605 +0800
-+++ libcore/clone.rs	2016-03-06 11:20:06.459564792 +0800
+--- libcore_orig/clone.rs	2016-03-16 10:20:01.301627654 +0800
++++ libcore/clone.rs	2016-03-16 10:19:17.676819382 +0800
 @@ -82,7 +82,9 @@
  clone_impl! { u32 }
  clone_impl! { u64 }
@@ -12,8 +12,8 @@ diff -rub libcore_orig/clone.rs libcore/clone.rs
  
  clone_impl! { () }
 diff -rub libcore_orig/default.rs libcore/default.rs
---- libcore_orig/default.rs	2016-03-06 11:46:43.508855567 +0800
-+++ libcore/default.rs	2016-03-06 11:20:06.459564792 +0800
+--- libcore_orig/default.rs	2016-03-16 10:20:01.297627582 +0800
++++ libcore/default.rs	2016-03-16 10:19:17.676819382 +0800
 @@ -160,5 +160,7 @@
  default_impl! { i32, 0 }
  default_impl! { i64, 0 }
@@ -23,8 +23,8 @@ diff -rub libcore_orig/default.rs libcore/default.rs
 +#[cfg(not(disable_float))]
  default_impl! { f64, 0.0f64 }
 diff -rub libcore_orig/fmt/mod.rs libcore/fmt/mod.rs
---- libcore_orig/fmt/mod.rs	2016-03-06 11:46:43.512855605 +0800
-+++ libcore/fmt/mod.rs	2016-03-06 11:20:06.459564792 +0800
+--- libcore_orig/fmt/mod.rs	2016-03-16 10:20:01.305627726 +0800
++++ libcore/fmt/mod.rs	2016-03-16 10:19:17.676819382 +0800
 @@ -17,6 +17,7 @@
  use cell::{Cell, RefCell, Ref, RefMut, BorrowState};
  use marker::PhantomData;
@@ -33,7 +33,7 @@ diff -rub libcore_orig/fmt/mod.rs libcore/fmt/mod.rs
  use num::flt2dec;
  use ops::Deref;
  use result;
-@@ -1018,6 +1019,7 @@
+@@ -1020,6 +1021,7 @@
      /// Takes the formatted parts and applies the padding.
      /// Assumes that the caller already has rendered the parts with required precision,
      /// so that `self.precision` can be ignored.
@@ -41,7 +41,7 @@ diff -rub libcore_orig/fmt/mod.rs libcore/fmt/mod.rs
      fn pad_formatted_parts(&mut self, formatted: &flt2dec::Formatted) -> Result {
          if let Some(mut width) = self.width {
              // for the sign-aware zero padding, we render the sign first and
-@@ -1054,6 +1056,7 @@
+@@ -1056,6 +1058,7 @@
          }
      }
  
@@ -49,7 +49,7 @@ diff -rub libcore_orig/fmt/mod.rs libcore/fmt/mod.rs
      fn write_formatted_parts(&mut self, formatted: &flt2dec::Formatted) -> Result {
          fn write_bytes(buf: &mut Write, s: &[u8]) -> Result {
              buf.write_str(unsafe { str::from_utf8_unchecked(s) })
-@@ -1436,6 +1439,7 @@
+@@ -1445,6 +1448,7 @@
      }
  }
  
@@ -57,7 +57,7 @@ diff -rub libcore_orig/fmt/mod.rs libcore/fmt/mod.rs
  // Common code of floating point Debug and Display.
  fn float_to_decimal_common<T>(fmt: &mut Formatter, num: &T, negative_zero: bool) -> Result
      where T: flt2dec::DecodableFloat
-@@ -1460,6 +1464,7 @@
+@@ -1469,6 +1473,7 @@
      fmt.pad_formatted_parts(&formatted)
  }
  
@@ -65,7 +65,7 @@ diff -rub libcore_orig/fmt/mod.rs libcore/fmt/mod.rs
  // Common code of floating point LowerExp and UpperExp.
  fn float_to_exponential_common<T>(fmt: &mut Formatter, num: &T, upper: bool) -> Result
      where T: flt2dec::DecodableFloat
-@@ -1513,7 +1518,9 @@
+@@ -1522,7 +1527,9 @@
          }
      }
  } }
@@ -77,8 +77,8 @@ diff -rub libcore_orig/fmt/mod.rs libcore/fmt/mod.rs
  // Implementation of Display/Debug for various core types
 Only in libcore/fmt: mod.rs.orig
 diff -rub libcore_orig/intrinsics.rs libcore/intrinsics.rs
---- libcore_orig/intrinsics.rs	2016-03-06 11:46:43.508855567 +0800
-+++ libcore/intrinsics.rs	2016-03-06 11:20:06.459564792 +0800
+--- libcore_orig/intrinsics.rs	2016-03-16 10:20:01.297627582 +0800
++++ libcore/intrinsics.rs	2016-03-16 10:19:17.676819382 +0800
 @@ -441,7 +441,10 @@
      pub fn volatile_load<T>(src: *const T) -> T;
      /// Perform a volatile store to the `dst` pointer.
@@ -103,8 +103,8 @@ diff -rub libcore_orig/intrinsics.rs libcore/intrinsics.rs
 Only in libcore/: intrinsics.rs.orig
 Only in libcore/: intrinsics.rs.rej
 diff -rub libcore_orig/lib.rs libcore/lib.rs
---- libcore_orig/lib.rs	2016-03-06 11:46:43.512855605 +0800
-+++ libcore/lib.rs	2016-03-06 11:20:06.459564792 +0800
+--- libcore_orig/lib.rs	2016-03-16 10:20:01.301627654 +0800
++++ libcore/lib.rs	2016-03-16 10:19:17.676819382 +0800
 @@ -102,7 +102,9 @@
  #[path = "num/u32.rs"]  pub mod u32;
  #[path = "num/u64.rs"]  pub mod u64;
@@ -118,8 +118,8 @@ diff -rub libcore_orig/lib.rs libcore/lib.rs
 Only in libcore/: lib.rs.orig
 Only in libcore/: lib.rs.rej
 diff -rub libcore_orig/num/flt2dec/decoder.rs libcore/num/flt2dec/decoder.rs
---- libcore_orig/num/flt2dec/decoder.rs	2016-03-06 11:46:43.512855605 +0800
-+++ libcore/num/flt2dec/decoder.rs	2016-03-06 11:20:06.459564792 +0800
+--- libcore_orig/num/flt2dec/decoder.rs	2016-03-16 10:20:01.305627726 +0800
++++ libcore/num/flt2dec/decoder.rs	2016-03-16 10:19:17.680819458 +0800
 @@ -12,6 +12,7 @@
  
  use prelude::v1::*;
@@ -142,10 +142,10 @@ diff -rub libcore_orig/num/flt2dec/decoder.rs libcore/num/flt2dec/decoder.rs
      fn min_pos_norm_value() -> Self { f64::MIN_POSITIVE }
  }
 diff -rub libcore_orig/num/mod.rs libcore/num/mod.rs
---- libcore_orig/num/mod.rs	2016-03-06 11:46:43.516855643 +0800
-+++ libcore/num/mod.rs	2016-03-06 11:20:06.459564792 +0800
+--- libcore_orig/num/mod.rs	2016-03-16 10:20:01.305627726 +0800
++++ libcore/num/mod.rs	2016-03-16 10:19:17.680819458 +0800
 @@ -44,7 +44,9 @@
- pub mod wrapping;
+ mod wrapping;
  
  // All these modules are technically private and only exposed for libcoretest:
 +#[cfg(not(disable_float))]
@@ -165,7 +165,7 @@ diff -rub libcore_orig/num/mod.rs libcore/num/mod.rs
 @@ -2210,6 +2213,7 @@
  #[unstable(feature = "core_float",
             reason = "stable interface is via `impl f{32,64}` in later crates",
-            issue = "27702")]
+            issue = "32110")]
 +#[cfg(not(disable_float))]
  pub trait Float: Sized {
      /// Returns the NaN value.
@@ -196,9 +196,9 @@ diff -rub libcore_orig/num/mod.rs libcore/num/mod.rs
 Only in libcore/num: mod.rs.orig
 Only in libcore/num: mod.rs.rej
 diff -rub libcore_orig/ops.rs libcore/ops.rs
---- libcore_orig/ops.rs	2016-03-06 11:46:43.512855605 +0800
-+++ libcore/ops.rs	2016-03-06 11:20:06.459564792 +0800
-@@ -212,7 +212,9 @@
+--- libcore_orig/ops.rs	2016-03-16 10:20:01.301627654 +0800
++++ libcore/ops.rs	2016-03-16 10:19:17.680819458 +0800
+@@ -215,7 +215,9 @@
      )*)
  }
  
@@ -209,7 +209,7 @@ diff -rub libcore_orig/ops.rs libcore/ops.rs
  
  /// The `Sub` trait is used to specify the functionality of `-`.
  ///
-@@ -265,7 +267,9 @@
+@@ -268,7 +270,9 @@
      )*)
  }
  
@@ -220,7 +220,7 @@ diff -rub libcore_orig/ops.rs libcore/ops.rs
  
  /// The `Mul` trait is used to specify the functionality of `*`.
  ///
-@@ -318,7 +322,9 @@
+@@ -321,7 +325,9 @@
      )*)
  }
  
@@ -231,7 +231,7 @@ diff -rub libcore_orig/ops.rs libcore/ops.rs
  
  /// The `Div` trait is used to specify the functionality of `/`.
  ///
-@@ -389,6 +395,7 @@
+@@ -392,6 +398,7 @@
      )*)
  }
  
@@ -239,7 +239,7 @@ diff -rub libcore_orig/ops.rs libcore/ops.rs
  div_impl_float! { f32 f64 }
  
  /// The `Rem` trait is used to specify the functionality of `%`.
-@@ -460,6 +467,7 @@
+@@ -463,6 +470,7 @@
      )*)
  }
  
@@ -247,7 +247,7 @@ diff -rub libcore_orig/ops.rs libcore/ops.rs
  rem_impl_float! { f32 f64 }
  
  /// The `Neg` trait is used to specify the functionality of unary `-`.
-@@ -527,7 +535,9 @@
+@@ -530,7 +538,9 @@
  }
  
  // neg_impl_unsigned! { usize u8 u16 u32 u64 }
@@ -258,7 +258,7 @@ diff -rub libcore_orig/ops.rs libcore/ops.rs
  
  /// The `Not` trait is used to specify the functionality of unary `!`.
  ///
-@@ -925,7 +935,9 @@
+@@ -928,7 +938,9 @@
      )+)
  }
  
@@ -269,7 +269,7 @@ diff -rub libcore_orig/ops.rs libcore/ops.rs
  
  /// The `SubAssign` trait is used to specify the functionality of `-=`.
  ///
-@@ -969,7 +981,9 @@
+@@ -972,7 +984,9 @@
      )+)
  }
  
@@ -280,7 +280,7 @@ diff -rub libcore_orig/ops.rs libcore/ops.rs
  
  /// The `MulAssign` trait is used to specify the functionality of `*=`.
  ///
-@@ -1013,7 +1027,9 @@
+@@ -1016,7 +1030,9 @@
      )+)
  }
  
@@ -291,7 +291,7 @@ diff -rub libcore_orig/ops.rs libcore/ops.rs
  
  /// The `DivAssign` trait is used to specify the functionality of `/=`.
  ///
-@@ -1057,7 +1073,9 @@
+@@ -1060,7 +1076,9 @@
      )+)
  }
  
@@ -302,7 +302,7 @@ diff -rub libcore_orig/ops.rs libcore/ops.rs
  
  /// The `RemAssign` trait is used to specify the functionality of `%=`.
  ///
-@@ -1101,7 +1119,9 @@
+@@ -1104,7 +1122,9 @@
      )+)
  }
  
