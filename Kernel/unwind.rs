@@ -19,14 +19,6 @@ pub extern "C" fn rust_begin_unwind(args: ::core::fmt::Arguments, file: &str, li
 	loop {}
 }
 
-#[lang="stack_exhausted"]
-#[no_mangle]
-pub fn __morestack() -> !
-{
-	loop {}
-}
-
-
 #[allow(non_camel_case_types)]
 #[repr(C)]
 #[derive(Clone,Copy)]
