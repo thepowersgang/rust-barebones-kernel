@@ -29,11 +29,7 @@ LINKFLAGS += -Map $(OBJDIR)map.txt
 LINKFLAGS += --gc-sections
 LINKFLAGS += -z max-page-size=0x1000
 
-RUSTFLAGS := -O --cfg arch__$(ARCH) --target=$(TARGETSPEC) --cfg disable_float
-# - amd64 needs to be set to use soft floating point
-ifeq ($(ARCH),amd64)
-RUSTFLAGS += -C soft-float
-endif
+RUSTFLAGS := -O --cfg arch__$(ARCH) --target=$(TARGETSPEC) -C soft-float
 
 # Objects
 LIBCORE := $(OBJDIR)libcore.rlib
@@ -50,9 +46,6 @@ clean:
 
 UPDATE:
 	curl https://static.rust-lang.org/dist/rustc-nightly-src.tar.gz -o ../rustc-nightly-src.tar.gz
-NEWPATCH:
-	tar -xmf ../rustc-nightly-src.tar.gz -C ../ rustc-nightly/src/libcore --transform 's~^rustc-nightly/src/libcore~libcore_orig~'
-	cd .. && diff -rub libcore_orig/ libcore/ > libcore_nofp.patch || true
 
 # Final link command
 $(BIN): $(OBJS) arch/$(ARCH)/link.ld
@@ -63,9 +56,8 @@ ifeq ($(ARCH),amd64)
 	@$(OBJCOPY) $@.elf64 -F elf32-i386 $@
 endif
 
-../libcore/lib.rs: ../rustc-nightly-src.tar.gz ../libcore_nofp.patch
+../libcore/lib.rs: ../rustc-nightly-src.tar.gz
 	tar -xmf ../rustc-nightly-src.tar.gz -C ../ rustc-nightly/src/libcore --transform 's~^rustc-nightly/src/~~'
-	cd .. && patch -p0 < libcore_nofp.patch
 
 # Compile libcore from ../libcore/
 $(OBJDIR)libcore.rlib: ../libcore/lib.rs Makefile $(TARGETSPEC)
