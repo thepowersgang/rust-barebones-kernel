@@ -140,6 +140,29 @@ start64.loop:
 	hlt
 	jmp start64.loop
 
+/*
+ RDI = Destination
+ RSI = Value
+ RDX = Count
+*/
+.section .text.memset
+.globl memset
+memset:
+	mov %rsi, %rax
+	mov %rdx, %rcx
+	rep stosb
+	ret
+/*
+ RDI = Destination
+ RSI = Source
+ RDX = Count
+*/
+.section .text.memcpy
+.globl memcpy
+memcpy:
+	mov %rdx, %rcx
+	rep movsb
+	ret
 
 
 /* === Page-aligned data === */

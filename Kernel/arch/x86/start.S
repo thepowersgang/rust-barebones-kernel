@@ -84,6 +84,50 @@ start_high:
 	hlt
 	jmp .l
 
+/*
+ + 8 = Destination
+ +12 = Value
+ +16 = Count
+*/
+.section .text.memset
+.globl memset
+memset:
+	push %ebp
+	mov %esp, %ebp
+	push %edi
+	
+	mov 8(%ebp), %edi
+	mov 12(%ebp), %eax
+	mov 16(%ebp), %ecx
+	rep stosb
+	
+	pop %edi
+	pop %ebp
+	ret
+/*
+ + 8 = Destination
+ +12 = Source
+ +16 = Count
+*/
+.section .text.memcpy
+.globl memcpy
+memcpy:
+	push %ebp
+	mov %esp, %ebp
+	push %esi
+	push %edi
+	
+	mov 8(%ebp), %edi
+	mov 12(%ebp), %esi
+	mov 16(%ebp), %ecx
+	
+	rep movsb
+	
+	pop %edi
+	pop %esi
+	pop %ebp
+	ret
+
 /* === Page-aligned data === */
 .section .padata
 init_pd:
