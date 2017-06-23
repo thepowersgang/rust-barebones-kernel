@@ -13,21 +13,6 @@
 #![no_std]	//< Kernels can't use std
 #![crate_name="kernel"]
 
-/// A dummy 'std' module to work around a set of issues in rustc
-mod std {
-	// #18491 - write!() expands to std::fmt::Arguments::new
-	pub use core::fmt;
-	// #16803 - #[derive] references std::cmp
-	pub use core::cmp;
-	// #21827 - Slicing syntax references std::ops
-	pub use core::ops;
-	// #21827 - Loops reference std
-	pub use core::iter;
-	pub use core::option;
-	// #16803 - Derive references marker/ops
-	pub use core::marker;
-}
-
 /// Macros, need to be loaded before everything else due to how rust parses
 #[macro_use]
 mod macros;
