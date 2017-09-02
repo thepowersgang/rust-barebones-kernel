@@ -62,7 +62,7 @@ endif
 # Compile libcore from ../libcore/
 $(OBJDIR)libcore.rlib: ../libcore/lib.rs Makefile $(TARGETSPEC)
 	@mkdir -p $(dir $@)
-	$(RUSTC) $(RUSTFLAGS) --out-dir=$(OBJDIR) --crate-type=lib --emit=link,dep-info $<
+	$(RUSTC) $(RUSTFLAGS) --out-dir=$(OBJDIR) --crate-type=lib --crate-name=core --emit=link,dep-info $<
 
 # Compile rust kernel object
 $(OBJDIR)kernel.o: main.rs $(LIBCORE) Makefile $(TARGETSPEC)
