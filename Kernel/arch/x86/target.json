@@ -4,6 +4,7 @@
 	"llvm-target": "i686-unknown-none",
 	"target-endian": "little",
 	"target-pointer-width": "32",
+	"target-c-int-width": "32",
 	"features": "-mmx,-sse,+soft-float",
 	"os": "none",
 	"arch": "x86",
