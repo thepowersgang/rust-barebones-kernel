@@ -1,15 +1,5 @@
-
-# CONFIG: Architecture to build for
+TRIPLE:=$(shell ./config.guess)-
 ARCH ?= amd64
-
-ifeq ($(ARCH),amd64)
-    TRIPLE ?= x86_64-none-elf-
-else ifeq ($(ARCH),x86)
-    TRIPLE ?= i686-elf-
-else
-    $(error Unknown architecture $(ARCH))
-endif
-
 
 # Toolchain commands (can be overridden)
 RUSTC ?= rustc
@@ -21,14 +11,12 @@ OBJCOPY := $(TRIPLE)objcopy
 # Object directory
 OBJDIR := .obj/$(ARCH)/
 
+#Linker Options
 LINKSCRIPT := arch/$(ARCH)/link.ld
-TARGETSPEC := arch/$(ARCH)/target.json
-# Compiler Options
-LINKFLAGS := -T $(LINKSCRIPT)
-LINKFLAGS += -Map $(OBJDIR)map.txt
-LINKFLAGS += --gc-sections
-LINKFLAGS += -z max-page-size=0x1000
+LINKFLAGS := -T $(LINKSCRIPT) -Map $(OBJDIR)map.txt --gc-sections -z max-page-size=0x1000
 
+# Compiler Options
+TARGETSPEC := arch/$(ARCH)/target.json
 RUSTFLAGS := -O --cfg arch__$(ARCH) --target=$(TARGETSPEC) -C soft-float
 
 # Objects
@@ -39,12 +27,12 @@ BIN := ../kernel.$(ARCH).bin
 
 .PHONY: all clean UPDATE
 
-all: ../kernel.$(ARCH).bin
+all: $(BIN)
 
 clean:
 	$(RM) -rf $(BIN) $(BIN).dsm $(OBJDIR)
 
-UPDATE:
+../rustc-nightly-src.tar.gz:
 	curl https://static.rust-lang.org/dist/rustc-nightly-src.tar.gz -o ../rustc-nightly-src.tar.gz
 
 # Final link command
