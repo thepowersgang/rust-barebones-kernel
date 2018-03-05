@@ -57,7 +57,7 @@ ifeq ($(ARCH),amd64)
 endif
 
 ../libcore/lib.rs: ../rustc-nightly-src.tar.gz
-	tar -xmf ../rustc-nightly-src.tar.gz -C ../ rustc-nightly-src/src/libcore --transform 's~^rustc-nightly-src/src/~~'
+	tar -xmf ../rustc-nightly-src.tar.gz -C ../ rustc-nightly-src/src/libcore rustc-nightly-src/src/stdsimd --transform 's~^rustc-nightly-src/src/~~'
 
 # Compile libcore from ../libcore/
 $(OBJDIR)libcore.rlib: ../libcore/lib.rs Makefile $(TARGETSPEC)
