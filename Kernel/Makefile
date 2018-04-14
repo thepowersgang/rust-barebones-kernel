@@ -33,7 +33,7 @@ RUSTFLAGS := -O --cfg arch__$(ARCH) --target=$(TARGETSPEC) -C soft-float
 
 # Objects
 LIBCORE := $(OBJDIR)libcore.rlib
-OBJS := start.o kernel.o libcore.rlib
+OBJS := start.o kernel.o libcore.rlib libcompiler_builtins.rlib
 OBJS := $(OBJS:%=$(OBJDIR)%)
 BIN := ../kernel.$(ARCH).bin
 
@@ -58,21 +58,27 @@ endif
 
 ../libcore/lib.rs: ../rustc-nightly-src.tar.gz
 	tar -xmf ../rustc-nightly-src.tar.gz -C ../ rustc-nightly-src/src/libcore rustc-nightly-src/src/stdsimd --transform 's~^rustc-nightly-src/src/~~'
+../libcompiler_builtins/src/lib.rs: ../rustc-nightly-src.tar.gz
+	tar -xmf ../rustc-nightly-src.tar.gz -C ../ rustc-nightly-src/src/libcompiler_builtins --transform 's~^rustc-nightly-src/src/~~'
 
 # Compile libcore from ../libcore/
 $(OBJDIR)libcore.rlib: ../libcore/lib.rs Makefile $(TARGETSPEC)
 	@mkdir -p $(dir $@)
 	$(RUSTC) $(RUSTFLAGS) --out-dir=$(OBJDIR) --crate-type=lib --crate-name=core --emit=link,dep-info $<
+$(OBJDIR)libcompiler_builtins.rlib: ../libcompiler_builtins/src/lib.rs Makefile $(TARGETSPEC) $(OBJDIR)libcore.rlib
+	@mkdir -p $(dir $@)
+	$(RUSTC) $(RUSTFLAGS) --out-dir=$(OBJDIR) --cfg feature=\"compiler-builtins\" --emit=link,dep-info --extern core=$(LIBCORE) $<
 
 # Compile rust kernel object
-$(OBJDIR)kernel.o: main.rs $(LIBCORE) Makefile $(TARGETSPEC)
+$(OBJDIR)kernel.o: main.rs $(LIBCORE) $(OBJDIR)libcompiler_builtins.rlib Makefile $(TARGETSPEC)
 	@mkdir -p $(dir $@)
-	$(RUSTC) $(RUSTFLAGS) --out-dir=$(OBJDIR) --emit=obj,dep-info $< --extern core=$(LIBCORE)
+	$(RUSTC) $(RUSTFLAGS) --out-dir=$(OBJDIR) --emit=obj,dep-info $< --extern core=$(LIBCORE) -L $(OBJDIR)
 
 # Compile architecture's assembly stub
 $(OBJDIR)start.o: arch/$(ARCH)/start.S Makefile
 	@mkdir -p $(dir $@)
 	$(AS) $(ASFLAGS) -o $@ $<
+
 
 # Include dependency files
 -include $(OBJDIR)libcore.d $(OBJDIR)kernel.d $(OBJDIR)start.d

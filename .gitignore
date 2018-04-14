@@ -1,7 +1,8 @@
 .*
 
 /libcore
-/libcore_orig
+/libcompiler_builtins
+/stdsimd
 
 /*.dsm
 /*.bin
