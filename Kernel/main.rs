@@ -8,7 +8,7 @@
  * This code has been put into the public domain, there are no restrictions on
  * its use, and the author takes no liability.
  */
-#![feature(lang_items)]	//< unwind needs to define lang items
+#![feature(panic_implementation,panic_info_message)]	//< Panic handling
 #![feature(asm)]	//< As a kernel, we need inline assembly
 #![no_std]	//< Kernels can't use std
 #![crate_name="kernel"]
@@ -29,8 +29,7 @@ pub mod unwind;
 /// Logging code
 mod logging;
 
-// Kernel entrypoint
-#[lang="start"]
+// Kernel entrypoint (called by arch/<foo>/start.S)
 #[no_mangle]
 pub fn kmain()
 {

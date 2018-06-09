@@ -10,12 +10,24 @@
  * its use, and the author takes no liability.
  */
 
-#[lang="panic_fmt"]
-#[no_mangle]
-pub extern "C" fn rust_begin_unwind(args: ::core::fmt::Arguments, file: &str, line: usize) -> !
+#[panic_implementation]
+#[no_mangle]	// This and pub neede for rust-lang/rust#51342
+pub fn panic_implementation(info: &::core::panic::PanicInfo) -> !
 {
-	// 'args' will print to the formatted string passed to panic!
-	log!("file='{}', line={} :: {}", file, line, args);
+	let (file,line) = match info.location()
+		{
+		Some(loc) => (loc.file(), loc.line(),),
+		None => ("", 0),
+		};
+	if let Some(m) = info.message() {
+		log!("PANIC file='{}', line={} :: {}", file, line, m);
+	}
+	else if let Some(m) = info.payload().downcast_ref::<&str>() {
+		log!("PANIC file='{}', line={} :: {}", file, line, m);
+	}
+	else {
+		log!("PANIC file='{}', line={} :: ?", file, line);
+	}
 	loop {}
 }
 
@@ -51,16 +63,6 @@ pub struct _Unwind_Exception
 	exception_class: u64,
 	exception_cleanup: fn(_Unwind_Reason_Code,*const _Unwind_Exception),
 	private: [u64; 2],
-}
-
-#[lang="eh_personality"]
-#[no_mangle]
-pub fn rust_eh_personality(
-	_version: isize, _actions: _Unwind_Action, _exception_class: u64,
-	_exception_object: &_Unwind_Exception, _context: &_Unwind_Context
-	) -> _Unwind_Reason_Code
-{
-	loop{}
 }
 
 #[no_mangle]

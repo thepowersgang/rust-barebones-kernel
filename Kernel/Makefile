@@ -30,6 +30,7 @@ LINKFLAGS += --gc-sections
 LINKFLAGS += -z max-page-size=0x1000
 
 RUSTFLAGS := -O --cfg arch__$(ARCH) --target=$(TARGETSPEC) -C soft-float
+RUSTFLAGS += -C panic=abort
 
 # Objects
 LIBCORE := $(OBJDIR)libcore.rlib
@@ -39,7 +40,7 @@ BIN := ../kernel.$(ARCH).bin
 
 .PHONY: all clean UPDATE
 
-all: ../kernel.$(ARCH).bin
+all: $(BIN)
 
 clean:
 	$(RM) -rf $(BIN) $(BIN).dsm $(OBJDIR)
