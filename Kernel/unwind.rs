@@ -10,8 +10,7 @@
  * its use, and the author takes no liability.
  */
 
-#[panic_implementation]
-#[no_mangle]	// This and pub neede for rust-lang/rust#51342
+#[panic_handler]
 pub fn panic_implementation(info: &::core::panic::PanicInfo) -> !
 {
 	let (file,line) = match info.location()
