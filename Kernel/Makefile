@@ -60,7 +60,7 @@ endif
 ../libcore/lib.rs: ../rustc-nightly-src.tar.gz
 	tar -xmf ../rustc-nightly-src.tar.gz -C ../ rustc-nightly-src/src/libcore rustc-nightly-src/src/stdsimd --transform 's~^rustc-nightly-src/src/~~'
 ../libcompiler_builtins/src/lib.rs: ../rustc-nightly-src.tar.gz
-	tar -xmf ../rustc-nightly-src.tar.gz -C ../ rustc-nightly-src/src/libcompiler_builtins --transform 's~^rustc-nightly-src/src/~~'
+	tar -xmf ../rustc-nightly-src.tar.gz -C ../ rustc-nightly-src/vendor/compiler_builtins --transform 's~^rustc-nightly-src/vendor/~lib~'
 
 # Compile libcore from ../libcore/
 $(OBJDIR)libcore.rlib: ../libcore/lib.rs Makefile $(TARGETSPEC)
