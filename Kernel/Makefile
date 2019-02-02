@@ -68,7 +68,7 @@ $(OBJDIR)libcore.rlib: ../libcore/lib.rs Makefile $(TARGETSPEC)
 	$(RUSTC) $(RUSTFLAGS) --out-dir=$(OBJDIR) --crate-type=lib --crate-name=core --emit=link,dep-info $<
 $(OBJDIR)libcompiler_builtins.rlib: ../libcompiler_builtins/src/lib.rs Makefile $(TARGETSPEC) $(OBJDIR)libcore.rlib
 	@mkdir -p $(dir $@)
-	$(RUSTC) $(RUSTFLAGS) --out-dir=$(OBJDIR) --cfg feature=\"compiler-builtins\" --emit=link,dep-info --extern core=$(LIBCORE) $<
+	$(RUSTC) $(RUSTFLAGS) --out-dir=$(OBJDIR) --cfg feature=\"compiler-builtins\" --emit=link,dep-info --extern core=$(LIBCORE) $< --cfg stage0
 
 # Compile rust kernel object
 $(OBJDIR)kernel.o: main.rs $(LIBCORE) $(OBJDIR)libcompiler_builtins.rlib Makefile $(TARGETSPEC)
