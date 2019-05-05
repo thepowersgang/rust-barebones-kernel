@@ -65,7 +65,7 @@ endif
 # Compile libcore from ../libcore/
 $(OBJDIR)libcore.rlib: ../libcore/lib.rs Makefile $(TARGETSPEC)
 	@mkdir -p $(dir $@)
-	$(RUSTC) $(RUSTFLAGS) --out-dir=$(OBJDIR) --crate-type=lib --crate-name=core --emit=link,dep-info $<
+	$(RUSTC) $(RUSTFLAGS) --out-dir=$(OBJDIR) --crate-type=lib --crate-name=core --emit=link,dep-info --edition 2018 $<
 $(OBJDIR)libcompiler_builtins.rlib: ../libcompiler_builtins/src/lib.rs Makefile $(TARGETSPEC) $(OBJDIR)libcore.rlib
 	@mkdir -p $(dir $@)
 	$(RUSTC) $(RUSTFLAGS) --out-dir=$(OBJDIR) --cfg feature=\"compiler-builtins\" --emit=link,dep-info --extern core=$(LIBCORE) $< --cfg stage0
