@@ -9,7 +9,7 @@
  * its use, and the author takes no liability.
  */
 #![feature(panic_info_message)]	//< Panic handling
-#![feature(asm)]	//< As a kernel, we need inline assembly
+#![feature(llvm_asm)]	//< As a kernel, we need inline assembly
 #![no_std]	//< Kernels can't use std
 #![crate_name="kernel"]
 
