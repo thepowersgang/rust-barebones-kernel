@@ -27,7 +27,6 @@ Roughly, this:
 $ git clone https://github.com/thepowersgang/rust-barebones-kernel
 $ cd rust-barebones-kernel
 $ cd Kernel
-$ make UPDATE
 $ make
 $ cd ..
 $ qemu-system-x86_64 -kernel kernel.amd64.bin -serial stdio
