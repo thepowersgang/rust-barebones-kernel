@@ -23,6 +23,8 @@ pub unsafe fn outb(port: u16, val: u8)
 pub unsafe fn inb(port: u16) -> u8
 {
 	let ret : u8;
+	// An alternative is this: BUT it can't handle 8-bit literals
+	// asm!("in al, dx", out("al") ret, in("dx") port, options(preserves_flags, nomem, nostack));
 	llvm_asm!("inb $1, $0" : "={al}"(ret) : "{dx}N"(port));
 	return ret;
 }

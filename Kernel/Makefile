@@ -12,6 +12,7 @@ endif
 
 
 # Toolchain commands (can be overridden)
+CARGO ?= cargo
 RUSTC ?= rustc
 LD := $(TRIPLE)ld
 AS := $(TRIPLE)as
@@ -29,24 +30,20 @@ LINKFLAGS += -Map $(OBJDIR)map.txt
 LINKFLAGS += --gc-sections
 LINKFLAGS += -z max-page-size=0x1000
 
-RUSTFLAGS := -O --cfg arch__$(ARCH) --target=$(TARGETSPEC) -C soft-float
+RUSTFLAGS := --cfg arch__$(ARCH) -C soft-float
 RUSTFLAGS += -C panic=abort
 
 # Objects
-LIBCORE := $(OBJDIR)libcore.rlib
-OBJS := start.o kernel.o libcore.rlib libcompiler_builtins.rlib
+OBJS := start.o kernel.a
 OBJS := $(OBJS:%=$(OBJDIR)%)
 BIN := ../kernel.$(ARCH).bin
 
-.PHONY: all clean UPDATE
+.PHONY: all clean PHONY
 
 all: $(BIN)
 
 clean:
 	$(RM) -rf $(BIN) $(BIN).dsm $(OBJDIR)
-
-UPDATE:
-	curl https://static.rust-lang.org/dist/rustc-nightly-src.tar.gz -o ../rustc-nightly-src.tar.gz
 
 # Final link command
 $(BIN): $(OBJS) arch/$(ARCH)/link.ld
@@ -57,25 +54,12 @@ ifeq ($(ARCH),amd64)
 	@$(OBJCOPY) $@.elf64 -F elf32-i386 $@
 endif
 
-../library/core/src/lib.rs: ../rustc-nightly-src.tar.gz
-	tar -xmf ../rustc-nightly-src.tar.gz -C ../ rustc-nightly-src/library/core/src rustc-nightly-src/library/stdarch/crates/core_arch/src --transform 's~^rustc-nightly-src/~~'
-
-../vendor/compiler_builtins/src/lib.rs: ../rustc-nightly-src.tar.gz
-	tar -xmf ../rustc-nightly-src.tar.gz -C ../ rustc-nightly-src/vendor/compiler_builtins --transform 's~^rustc-nightly-src/~~'
-
-# Compile libcore
-$(OBJDIR)libcore.rlib: ../library/core/src/lib.rs Makefile $(TARGETSPEC)
-	@mkdir -p $(dir $@)
-	$(RUSTC) $(RUSTFLAGS) --out-dir=$(OBJDIR) --crate-type=lib --crate-name=core --emit=link,dep-info --edition 2018 $<
-
-$(OBJDIR)libcompiler_builtins.rlib: ../vendor/compiler_builtins/src/lib.rs Makefile $(TARGETSPEC) $(OBJDIR)libcore.rlib
-	@mkdir -p $(dir $@)
-	$(RUSTC) $(RUSTFLAGS) --out-dir=$(OBJDIR) --crate-type=lib --crate-name=compiler_builtins --cfg feature=\"compiler-builtins\" --emit=link,dep-info --extern core=$(LIBCORE) $< --cfg stage0
 
 # Compile rust kernel object
-$(OBJDIR)kernel.o: main.rs $(LIBCORE) $(OBJDIR)libcompiler_builtins.rlib Makefile $(TARGETSPEC)
+$(OBJDIR)kernel.a: PHONY Makefile $(TARGETSPEC)
 	@mkdir -p $(dir $@)
-	$(RUSTC) $(RUSTFLAGS) --out-dir=$(OBJDIR) --emit=obj,dep-info $< --extern core=$(LIBCORE) -L $(OBJDIR)
+	RUSTFLAGS="$(RUSTFLAGS)" $(CARGO) build -Z build-std=core --target=$(TARGETSPEC) --release
+	@cp --preserve target/target/release/libkernel.a $@
 
 # Compile architecture's assembly stub
 $(OBJDIR)start.o: arch/$(ARCH)/start.S Makefile
@@ -84,4 +68,4 @@ $(OBJDIR)start.o: arch/$(ARCH)/start.S Makefile
 
 
 # Include dependency files
--include $(OBJDIR)libcore.d $(OBJDIR)kernel.d $(OBJDIR)start.d
+-include $(OBJDIR)start.d

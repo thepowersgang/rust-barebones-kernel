@@ -18,7 +18,7 @@ pub struct Writer(bool);
 ///
 /// This is not really a lock. Since there is no threading at the moment, all
 /// it does is prevent writing when a collision would occur.
-static LOGGING_LOCK: atomic::AtomicBool = atomic::ATOMIC_BOOL_INIT;
+static LOGGING_LOCK: atomic::AtomicBool = atomic::AtomicBool::new(false);
 
 impl Writer
 {
